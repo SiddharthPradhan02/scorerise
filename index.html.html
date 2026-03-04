@@ -226,14 +226,16 @@
   .practice-title { font-weight:700; font-size:16px; }
   .practice-meta { color:var(--muted); font-size:13px; }
   .timer { font-family:'DM Mono',monospace; font-size:18px; color:var(--gold); background:rgba(245,200,66,0.1); padding:8px 16px; border-radius:8px; }
-  .practice-body { display:flex; flex:1; }
-  .practice-passage { width:50%; padding:40px; border-right:1px solid var(--border); overflow-y:auto; max-height:calc(100vh - 160px); }
+  .practice-body { display:flex; flex:1; overflow:hidden; }
+  .practice-passage { width:50%; min-width:0; padding:40px; border-right:1px solid var(--border); overflow-y:auto; max-height:calc(100vh - 160px); }
   .passage-label { font-size:11px; color:var(--teal); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
   .passage-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:20px; }
   .passage-text { font-size:15px; line-height:1.85; color:#c8d4e8; }
   .passage-text p { margin-bottom:16px; }
   .highlight { background:rgba(0,212,170,0.15); border-bottom:2px solid var(--teal); cursor:pointer; }
-  .practice-questions { width:50%; padding:40px; overflow-y:auto; max-height:calc(100vh - 160px); }
+  .practice-questions { width:50%; min-width:0; padding:40px; overflow-y:auto; max-height:calc(100vh - 160px); }
+  .option { word-wrap:break-word; overflow-wrap:break-word; }
+  .option div:last-child { flex:1; min-width:0; }
   .q-counter { font-size:12px; color:var(--muted); margin-bottom:8px; font-family:'DM Mono',monospace; }
   .q-text { font-size:16px; line-height:1.6; margin-bottom:28px; font-weight:500; }
   .options { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
@@ -768,38 +770,129 @@
     selected = letter;
   }
 
+  // Question bank
+  const questions = [
+    {
+      num: 1, text: 'What does the passage say about early bilingualism studies in the 1960s?',
+      options: ['They conclusively proved bilingual children are more intelligent.','They suggested bilingual children outperformed monolinguals on mental flexibility tests.','They were immediately accepted by all researchers.','They focused exclusively on adult language learners.'],
+      correct: 'B', difficulty: 'Medium', type: 'Factual Information',
+      explanation: 'The passage states early studies "suggested that bilingual children outperformed their monolingual peers on tests of mental flexibility and problem-solving." The key word is "suggested" — these were contested findings, not conclusive proof.'
+    },
+    {
+      num: 2, text: 'The word "reinvigorated" in paragraph 2 is closest in meaning to:',
+      options: ['contradicted','undermined','revitalized','concluded'],
+      correct: 'C', difficulty: 'Medium', type: 'Vocabulary',
+      explanation: '"Reinvigorated" means to give new energy or strength to something. In context, recent neuroimaging studies gave new energy and momentum to the bilingualism debate — which is closest to "revitalized."'
+    },
+    {
+      num: 3, text: 'According to the passage, what can be inferred about the age of bilingual language acquisition and brain structure?',
+      options: ['Adults who learn a second language later show no brain changes.','Learning two languages before age five is linked to more pronounced brain density differences.','The anterior cingulate cortex is only present in childhood bilinguals.','Brain differences disappear entirely after age five.'],
+      correct: 'B', difficulty: 'Medium', type: 'Inference',
+      explanation: 'The passage states structural differences "were more pronounced in individuals who had acquired both languages before the age of five," suggesting a critical developmental window. Option B correctly reflects this relationship.'
+    },
+    {
+      num: 4, text: 'The author mentions publication bias in paragraph 4 primarily in order to:',
+      options: ['Argue that bilingual advantages have been entirely fabricated by biased researchers.','Suggest that earlier positive findings may have overstated the true magnitude of the bilingual advantage.','Prove that bilingualism has no effect on executive function whatsoever.','Challenge the validity of the meta-analysis by pointing out methodological flaws.'],
+      correct: 'B', difficulty: 'Hard', type: 'Rhetorical Purpose',
+      explanation: 'The author introduces publication bias to explain why early studies may have appeared more positive than warranted — not to dismiss bilingualism research entirely, but to suggest effect sizes may be inflated. This supports option B.'
+    },
+    {
+      num: 5, text: 'According to the passage, the "bilingual advantage" hypothesis predicts that bilinguals will excel at:',
+      options: ['Learning additional languages faster than monolinguals.','Tasks requiring rapid switching between competing stimuli.','Verbal memory tasks more than nonverbal tasks.','All cognitive tasks regardless of type.'],
+      correct: 'B', difficulty: 'Medium', type: 'Factual Information',
+      explanation: 'The passage explicitly states the bilingual advantage "predicts that bilinguals should excel at tasks requiring them to switch rapidly between competing stimuli or ignore irrelevant information." This directly matches option B.'
+    },
+    {
+      num: 6, text: 'Which of the following best describes the organization of the passage?',
+      options: ['A problem is presented, then three solutions are evaluated.','A claim is introduced, supporting evidence is provided, then counterarguments are addressed.','Two opposing theories are compared and one is declared correct.','Historical events are described in chronological order.'],
+      correct: 'B', difficulty: 'Hard', type: 'Prose Summary',
+      explanation: 'The passage introduces the bilingual advantage claim (paragraph 1), provides neuroimaging evidence (paragraphs 2–3), then addresses criticism and counterevidence (paragraph 4), and ends with practical implications. This matches option B.'
+    },
+    {
+      num: 7, text: 'What do longitudinal studies on aging suggest about bilingualism?',
+      options: ['Bilingual patients develop Alzheimer's disease at higher rates.','Bilingualism delays the onset of Alzheimer's symptoms by several years.','Monolinguals build more cognitive reserve than bilinguals.','Bilingualism has no effect on dementia progression.'],
+      correct: 'B', difficulty: 'Easy', type: 'Factual Information',
+      explanation: 'The passage states that "the onset of Alzheimer's disease symptoms is delayed by an average of four to five years in bilingual patients compared to monolinguals." This directly supports option B.'
+    },
+    {
+      num: 8, text: 'The term "cognitive reserve" as used in the passage refers to:',
+      options: ['The total number of languages a person can speak fluently.','A buffer against neurological damage built through mental exercise.','A region of the brain associated with language processing.','The ability to switch between languages rapidly.'],
+      correct: 'B', difficulty: 'Medium', type: 'Vocabulary in Context',
+      explanation: 'The passage defines cognitive reserve as "a buffer against the neurological damage caused by dementia," built through lifelong cognitive exercise such as managing two languages. Option B captures this definition accurately.'
+    },
+    {
+      num: 9, text: 'What does the 2014 meta-analysis suggest about previous bilingualism research?',
+      options: ['All previous studies on bilingualism were fundamentally flawed.','There is no relationship between bilingualism and cognitive function.','Publication bias may have led to overestimation of bilingual advantages.','Bilingualism only affects cognitive function in elderly populations.'],
+      correct: 'C', difficulty: 'Hard', type: 'Inference',
+      explanation: 'The meta-analysis found "no consistent advantage" and argued publication bias "had inflated early estimates of the effect." This suggests previous positive results may have been overstated — matching option C.'
+    },
+    {
+      num: 10, text: 'The author's attitude toward the bilingual advantage hypothesis can best be described as:',
+      options: ['Fully supportive, citing extensive neuroimaging evidence.','Dismissive, arguing the hypothesis has been thoroughly disproven.','Balanced, presenting both supporting evidence and legitimate criticisms.','Uncertain, refusing to draw any conclusions about the research.'],
+      correct: 'C', difficulty: 'Hard', type: 'Author's Purpose',
+      explanation: 'The author presents neuroimaging evidence supporting the hypothesis (paragraphs 2–3) alongside failed replications and publication bias concerns (paragraph 4). This balanced treatment of both sides best matches option C.'
+    }
+  ];
+
+  let currentQ = 2; // start at Q3 (index 2)
+
+  function renderQuestion(idx) {
+    const q = questions[idx];
+    document.querySelector('.q-counter').textContent = `QUESTION ${q.num} OF 10`;
+    document.querySelector('.q-text').textContent = q.text;
+    document.querySelector('.practice-meta').textContent = `Question ${q.num} of 10 · ${q.difficulty} Difficulty · ${q.type}`;
+    const opts = document.querySelectorAll('.option');
+    q.options.forEach((opt, i) => {
+      opts[i].querySelector('div:last-child').textContent = opt;
+      opts[i].classList.remove('selected','correct','incorrect');
+    });
+    document.getElementById('explanation').classList.remove('show');
+    document.getElementById('explanation').innerHTML = `<strong>Correct Answer: ${q.correct}</strong><br><br>${q.explanation}`;
+    document.getElementById('submit-btn').style.display = 'inline-block';
+    document.getElementById('next-btn').style.display = 'none';
+    // Update dots
+    document.querySelectorAll('.q-dot').forEach((dot, i) => {
+      dot.classList.remove('current');
+      if (i < idx) dot.classList.add('done');
+      else if (i === idx) dot.classList.add('current');
+    });
+    selected = null;
+  }
+
   function submitAnswer() {
     if (!selected) { alert('Please select an answer first.'); return; }
+    const q = questions[currentQ];
     const opts = document.querySelectorAll('.option');
     opts.forEach((o, i) => {
       const letter = ['A','B','C','D'][i];
-      if (letter === 'B') o.classList.add('correct');
-      else if (letter === selected && selected !== 'B') o.classList.add('incorrect');
+      if (letter === q.correct) o.classList.add('correct');
+      else if (letter === selected && selected !== q.correct) o.classList.add('incorrect');
     });
     document.getElementById('explanation').classList.add('show');
     document.getElementById('submit-btn').style.display = 'none';
-    document.getElementById('next-btn').style.display = 'inline-block';
-    // Mark Q3 dot as done
-    document.querySelectorAll('.q-dot')[2].classList.remove('current');
-    document.querySelectorAll('.q-dot')[2].classList.add('done');
+    document.getElementById('next-btn').style.display = currentQ < questions.length - 1 ? 'inline-block' : 'none';
+    const currentDot = document.querySelector('.q-dot.current');
+    if (currentDot) { currentDot.classList.remove('current'); currentDot.classList.add('done'); }
+    if (currentQ >= questions.length - 1) {
+      document.getElementById('next-btn').style.display = 'none';
+      const actions = document.querySelector('.q-actions');
+      if (!document.getElementById('finish-btn')) {
+        const finishBtn = document.createElement('button');
+        finishBtn.id = 'finish-btn';
+        finishBtn.className = 'btn-primary';
+        finishBtn.style.cssText = 'padding:12px 28px;font-size:15px;background:var(--gold);color:var(--navy)';
+        finishBtn.textContent = '🎉 Finish & See Score';
+        finishBtn.onclick = () => { showPage('dashboard'); };
+        actions.appendChild(finishBtn);
+      }
+    }
   }
 
   function nextQuestion() {
-    // Reset state
-    selected = null;
-    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected','correct','incorrect'));
-    document.getElementById('explanation').classList.remove('show');
-    document.getElementById('submit-btn').style.display = 'inline-block';
-    document.getElementById('next-btn').style.display = 'none';
-    document.querySelectorAll('.q-dot')[3].classList.add('current');
-    // Update counter
-    document.querySelector('.q-counter').textContent = 'QUESTION 4 OF 10';
-    document.querySelector('.q-text').textContent = 'The author mentions publication bias in paragraph 4 primarily in order to...';
-    document.querySelectorAll('.option')[0].querySelector('div:last-child').textContent = 'Argue that bilingual advantages have been entirely fabricated by biased researchers.';
-    document.querySelectorAll('.option')[1].querySelector('div:last-child').textContent = 'Suggest that earlier positive findings may have overstated the true magnitude of the bilingual advantage.';
-    document.querySelectorAll('.option')[2].querySelector('div:last-child').textContent = 'Prove that bilingualism has no effect on executive function whatsoever.';
-    document.querySelectorAll('.option')[3].querySelector('div:last-child').textContent = 'Challenge the validity of the meta-analysis by pointing out methodological flaws.';
-    document.querySelector('.practice-meta').textContent = 'Question 4 of 10 · Hard Difficulty · Rhetorical Purpose';
+    if (currentQ < questions.length - 1) {
+      currentQ++;
+      renderQuestion(currentQ);
+    }
   }
 
   // Scroll reveal
@@ -967,3 +1060,4 @@
 </script>
 </body>
 </html>
+
