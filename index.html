@@ -204,14 +204,14 @@
 <div id="page-landing" class="page active">
   <section class="hero">
     <div>
-      <div class="hero-badge">✦ AI-Powered · Infinite Practice Questions</div>
+      <div class="hero-badge">✦ AI-Powered - Infinite Practice Questions</div>
       <h1>Crack the TOEFL.<br>Own your <em>score.</em></h1>
       <p>AI generates fresh passages and questions every session across all 4 TOEFL modules. Never run out of practice material.</p>
       <div class="hero-actions">
         <button class="btn-large btn-teal" onclick="showModal('signup')">Start for Free</button>
         <button class="btn-large btn-outline" onclick="showPractice('reading')">Try Practice →</button>
       </div>
-      <p style="color:var(--muted);font-size:13px;margin-top:14px">No credit card needed · Unlimited AI-generated content</p>
+      <p style="color:var(--muted);font-size:13px;margin-top:14px">No credit card needed - Unlimited AI-generated content</p>
     </div>
     <div>
       <div class="score-card">
@@ -288,10 +288,10 @@
     <div class="dash-panel">
       <div class="panel-title">Module Performance <span class="panel-sub" onclick="showPractice('reading')">Practice Now →</span></div>
       <div class="module-list">
-        <div class="module-item" onclick="showPractice('reading')"><div class="module-icon" style="background:rgba(0,212,170,0.1)">📖</div><div class="module-info"><div class="module-name">Reading</div><div class="module-stat" id="r-stat">Not started · AI generates new passages</div><div class="mod-bar"><div class="mod-bar-fill" id="r-bar" style="width:0%"></div></div></div><div class="module-pct" id="r-pct">—</div></div>
-        <div class="module-item" onclick="showPractice('listening')"><div class="module-icon" style="background:rgba(245,200,66,0.1)">🎧</div><div class="module-info"><div class="module-name">Listening</div><div class="module-stat" id="l-stat">Not started · AI generates new lectures</div><div class="mod-bar"><div class="mod-bar-fill" id="l-bar" style="width:0%;background:var(--gold)"></div></div></div><div class="module-pct" id="l-pct" style="color:var(--gold)">—</div></div>
-        <div class="module-item" onclick="showPractice('speaking')"><div class="module-icon" style="background:rgba(255,107,107,0.1)">🗣</div><div class="module-info"><div class="module-name">Speaking</div><div class="module-stat" id="s-stat">Not started · AI generates new prompts</div><div class="mod-bar"><div class="mod-bar-fill" id="s-bar" style="width:0%;background:var(--coral)"></div></div></div><div class="module-pct" id="s-pct" style="color:var(--coral)">—</div></div>
-        <div class="module-item" onclick="showPractice('writing')"><div class="module-icon" style="background:rgba(0,212,170,0.1)">✍️</div><div class="module-info"><div class="module-name">Writing</div><div class="module-stat" id="w-stat">Not started · AI generates new tasks</div><div class="mod-bar"><div class="mod-bar-fill" id="w-bar" style="width:0%"></div></div></div><div class="module-pct" id="w-pct">—</div></div>
+        <div class="module-item" onclick="showPractice('reading')"><div class="module-icon" style="background:rgba(0,212,170,0.1)">📖</div><div class="module-info"><div class="module-name">Reading</div><div class="module-stat" id="r-stat">Not started - AI generates new passages</div><div class="mod-bar"><div class="mod-bar-fill" id="r-bar" style="width:0%"></div></div></div><div class="module-pct" id="r-pct">—</div></div>
+        <div class="module-item" onclick="showPractice('listening')"><div class="module-icon" style="background:rgba(245,200,66,0.1)">🎧</div><div class="module-info"><div class="module-name">Listening</div><div class="module-stat" id="l-stat">Not started - AI generates new lectures</div><div class="mod-bar"><div class="mod-bar-fill" id="l-bar" style="width:0%;background:var(--gold)"></div></div></div><div class="module-pct" id="l-pct" style="color:var(--gold)">—</div></div>
+        <div class="module-item" onclick="showPractice('speaking')"><div class="module-icon" style="background:rgba(255,107,107,0.1)">🗣</div><div class="module-info"><div class="module-name">Speaking</div><div class="module-stat" id="s-stat">Not started - AI generates new prompts</div><div class="mod-bar"><div class="mod-bar-fill" id="s-bar" style="width:0%;background:var(--coral)"></div></div></div><div class="module-pct" id="s-pct" style="color:var(--coral)">—</div></div>
+        <div class="module-item" onclick="showPractice('writing')"><div class="module-icon" style="background:rgba(0,212,170,0.1)">✍️</div><div class="module-info"><div class="module-name">Writing</div><div class="module-stat" id="w-stat">Not started - AI generates new tasks</div><div class="mod-bar"><div class="mod-bar-fill" id="w-bar" style="width:0%"></div></div></div><div class="module-pct" id="w-pct">—</div></div>
       </div>
     </div>
   </div>
@@ -482,7 +482,7 @@ Requirements:
     selected = null;
     scores[module] = [];
     startTimer(isListening ? 900 : 1200);
-    document.getElementById('practice-meta').textContent = 'Question 1 of 10 · Session ' + sessionCounts[module];
+    document.getElementById('practice-meta').textContent = 'Question 1 of 10 - Session ' + sessionCounts[module];
     renderQAQuestion(module, 0);
   } catch(e) {
     document.getElementById('practice-body').innerHTML =
@@ -496,7 +496,7 @@ function renderQAQuestion(module, idx) {
   const q = currentContent.questions[idx];
   currentQ = idx;
   selected = null;
-  document.getElementById('practice-meta').textContent = 'Question ' + (idx+1) + ' of 10 · Session ' + sessionCounts[module];
+  document.getElementById('practice-meta').textContent = 'Question ' + (idx+1) + ' of 10 - Session ' + sessionCounts[module];
 
   let dots = '<div class="q-nav">';
   for (let i = 0; i < 10; i++) {
@@ -510,7 +510,7 @@ function renderQAQuestion(module, idx) {
   const isListening = module === 'listening';
   const passageHTML =
     '<div class="practice-passage">' +
-    '<div class="passage-label">' + (isListening ? 'Listening Transcript' : 'Reading Passage') + ' · Session ' + sessionCounts[module] + '</div>' +
+    '<div class="passage-label">' + (isListening ? 'Listening Transcript' : 'Reading Passage') + ' - Session ' + sessionCounts[module] + '</div>' +
     '<div class="passage-title">' + currentContent.title + '</div>' +
     '<div class="passage-text">' + currentContent.passage + '</div>' +
     '</div>';
@@ -639,7 +639,7 @@ Task types must be exactly:
 
 function renderSpeakingTask(tasks, idx) {
   const task = tasks[idx];
-  document.getElementById('practice-meta').textContent = 'Task ' + (idx+1) + ' of ' + tasks.length + ' · ' + task.type;
+  document.getElementById('practice-meta').textContent = 'Task ' + (idx+1) + ' of ' + tasks.length + ' - ' + task.type;
   document.getElementById('practice-body').innerHTML =
     '<div class="speaking-area">' +
     '<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">' +
@@ -736,7 +736,7 @@ Return ONLY valid JSON:
 
 function renderWritingTask(tasks, idx) {
   const task = tasks[idx];
-  document.getElementById('practice-meta').textContent = 'Task ' + (idx+1) + ' of ' + tasks.length + ' · ' + task.type;
+  document.getElementById('practice-meta').textContent = 'Task ' + (idx+1) + ' of ' + tasks.length + ' - ' + task.type;
   document.getElementById('practice-body').innerHTML =
     '<div class="practice-passage">' +
     '<div class="passage-label">Task ' + (idx+1) + ': ' + task.type + '</div>' +
@@ -813,7 +813,7 @@ function updateDashboard() {
     const st = document.getElementById(key+'-stat');
     const bar = document.getElementById(key+'-bar');
     const pctEl = document.getElementById(key+'-pct');
-    if (st) st.textContent = done > 0 ? correct+'/'+done+' correct · '+sessions+' sessions' : 'Not started · AI generates new content';
+    if (st) st.textContent = done > 0 ? correct+'/'+done+' correct - '+sessions+' sessions' : 'Not started - AI generates new content';
     if (bar) bar.style.width = pct + '%';
     if (pctEl) pctEl.textContent = done > 0 ? pct+'%' : '—';
   };
@@ -826,14 +826,14 @@ function updateDashboard() {
   const sStat = document.getElementById('s-stat');
   const sBar = document.getElementById('s-bar');
   const sPct = document.getElementById('s-pct');
-  if (sStat) sStat.textContent = ss > 0 ? ss+' tasks recorded · '+sessionCounts.speaking+' sessions' : 'Not started · AI generates new prompts';
+  if (sStat) sStat.textContent = ss > 0 ? ss+' tasks recorded - '+sessionCounts.speaking+' sessions' : 'Not started - AI generates new prompts';
   if (sBar) sBar.style.width = Math.min(100, ss*10)+'%';
   if (sPct) sPct.textContent = ss > 0 ? ss+' done' : '—';
 
   const wStat = document.getElementById('w-stat');
   const wBar = document.getElementById('w-bar');
   const wPct = document.getElementById('w-pct');
-  if (wStat) wStat.textContent = ws > 0 ? ws+' tasks submitted · '+sessionCounts.writing+' sessions' : 'Not started · AI generates new tasks';
+  if (wStat) wStat.textContent = ws > 0 ? ws+' tasks submitted - '+sessionCounts.writing+' sessions' : 'Not started - AI generates new tasks';
   if (wBar) wBar.style.width = Math.min(100, ws*20)+'%';
   if (wPct) wPct.textContent = ws > 0 ? ws+' done' : '—';
 
