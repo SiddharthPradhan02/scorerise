@@ -808,5 +808,162 @@
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
+
+<!-- SUPABASE AUTH -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://hwrzcntfbfritapdneei.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3cnpjbnRmYmZyaXRhcGRuZWVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2Mzc4OTksImV4cCI6MjA4ODIxMzg5OX0.3656rGy3BaBbK44NOGihrDxZMYmG2yuKT3kVO1M82PY';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Auth state
+  let currentUser = null;
+
+  // Check if already logged in on page load
+  window.addEventListener('load', async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      updateNavForLoggedInUser(session.user);
+    }
+  });
+
+  function updateNavForLoggedInUser(user) {
+    const navCta = document.querySelector('.nav-cta');
+    const name = user.user_metadata?.name || user.email.split('@')[0];
+    navCta.innerHTML = `
+      <span style="color:var(--muted);font-size:14px">👋 ${name}</span>
+      <button class="btn-primary" onclick="showPage('dashboard')">Dashboard</button>
+      <button class="btn-ghost" onclick="handleLogout()">Log Out</button>
+    `;
+    // Update dashboard greeting
+    const greeting = document.querySelector('.dash-greeting');
+    if (greeting) greeting.textContent = `Good morning, ${name} 👋`;
+  }
+
+  // SIGN UP
+  async function handleSignup() {
+    const inputs = document.querySelectorAll('#modal-signup .modal-input');
+    const name = inputs[0].value.trim();
+    const email = inputs[1].value.trim();
+    const password = inputs[2].value.trim();
+    const target = inputs[3].value.trim();
+
+    if (!name || !email || !password) {
+      showAuthMessage('signup', 'Please fill in all required fields.', 'error');
+      return;
+    }
+
+    const signupBtn = document.querySelector('#modal-signup .btn-primary');
+    signupBtn.textContent = 'Creating account...';
+    signupBtn.disabled = true;
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { data: { name, target_score: parseInt(target) || null } }
+    });
+
+    if (error) {
+      showAuthMessage('signup', error.message, 'error');
+      signupBtn.textContent = 'Create Account →';
+      signupBtn.disabled = false;
+      return;
+    }
+
+    // Also insert into users table
+    if (data.user) {
+      await sb.from('users').insert({
+        id: data.user.id,
+        email,
+        name,
+        target_score: parseInt(target) || null
+      });
+      currentUser = data.user;
+      updateNavForLoggedInUser(data.user);
+    }
+
+    showAuthMessage('signup', '✅ Account created! Redirecting...', 'success');
+    setTimeout(() => {
+      hideModal('signup');
+      showPage('dashboard');
+    }, 1200);
+  }
+
+  // LOG IN
+  async function handleLogin() {
+    const inputs = document.querySelectorAll('#modal-login .modal-input');
+    const email = inputs[0].value.trim();
+    const password = inputs[1].value.trim();
+
+    if (!email || !password) {
+      showAuthMessage('login', 'Please enter your email and password.', 'error');
+      return;
+    }
+
+    const loginBtn = document.querySelector('#modal-login .btn-primary');
+    loginBtn.textContent = 'Logging in...';
+    loginBtn.disabled = true;
+
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      showAuthMessage('login', error.message, 'error');
+      loginBtn.textContent = 'Log In';
+      loginBtn.disabled = false;
+      return;
+    }
+
+    currentUser = data.user;
+    updateNavForLoggedInUser(data.user);
+    showAuthMessage('login', '✅ Welcome back! Redirecting...', 'success');
+    setTimeout(() => {
+      hideModal('login');
+      showPage('dashboard');
+    }, 1000);
+  }
+
+  // LOG OUT
+  async function handleLogout() {
+    await sb.auth.signOut();
+    currentUser = null;
+    document.querySelector('.nav-cta').innerHTML = `
+      <button class="btn-ghost" onclick="showModal('login')">Log In</button>
+      <button class="btn-primary" onclick="showModal('signup')">Start Free</button>
+    `;
+    showPage('landing');
+  }
+
+  // Show auth messages
+  function showAuthMessage(modal, msg, type) {
+    let el = document.querySelector(`#modal-${modal} .auth-msg`);
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'auth-msg';
+      el.style.cssText = 'font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:12px;';
+      document.querySelector(`#modal-${modal} .modal-actions`).before(el);
+    }
+    el.textContent = msg;
+    el.style.background = type === 'error' ? 'rgba(255,107,107,0.15)' : 'rgba(0,212,170,0.15)';
+    el.style.color = type === 'error' ? '#ff6b6b' : '#00d4aa';
+    el.style.border = `1px solid ${type === 'error' ? 'rgba(255,107,107,0.3)' : 'rgba(0,212,170,0.3)'}`;
+  }
+
+  // Override the old dummy button handlers in modals
+  document.addEventListener('DOMContentLoaded', () => {
+    // Replace login button handler
+    const loginModal = document.getElementById('modal-login');
+    if (loginModal) {
+      const btn = loginModal.querySelector('.btn-primary');
+      if (btn) btn.onclick = handleLogin;
+    }
+    // Replace signup button handler
+    const signupModal = document.getElementById('modal-signup');
+    if (signupModal) {
+      const btn = signupModal.querySelector('.btn-primary');
+      if (btn) btn.onclick = handleSignup;
+    }
+  });
+</script>
 </body>
 </html>
