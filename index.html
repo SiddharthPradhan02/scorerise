@@ -215,7 +215,8 @@
     </div>
     <div>
       <div class="score-card">
-        <div style="color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">YOUR PREDICTED SCORE</div><div><span class="score-big">104</span><span style="color:var(--muted);font-size:18px"> / 120</span></div>
+        <div style="color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">YOUR PREDICTED SCORE</div>
+        <div><span class="score-big">104</span><span style="color:var(--muted);font-size:18px"> / 120</span></div>
         <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px;">
           <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Reading</span><span style="color:var(--teal);font-family:'DM Mono',monospace">27/30</span></div><div class="score-bar-track"><div class="score-bar-fill" style="width:90%"></div></div></div>
           <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Listening</span><span style="color:var(--teal);font-family:'DM Mono',monospace">26/30</span></div><div class="score-bar-track"><div class="score-bar-fill" style="width:87%"></div></div></div>
@@ -514,8 +515,7 @@ function renderQAQuestion(module, idx) {
     '<div class="passage-text">' + currentContent.passage + '</div>' +
     '</div>';
 
-  con
-  st qHTML =
+  const qHTML =
     '<div class="practice-questions">' +
     dots +
     '<div class="q-counter">QUESTION ' + (idx+1) + ' OF 10</div>' +
@@ -905,11 +905,3 @@ async function handleLogout() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-       
